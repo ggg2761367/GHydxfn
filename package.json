@@ -6,7 +6,8 @@
     "build": "hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
-    "server": "hexo server"
+    "server": "hexo server",
+    "dev": "concurrently -k -n HEXO,BS -c cyan,magenta \"hexo server\" \"browser-sync start --proxy http://localhost:4000 --startPath /GHydxfn/ --files source/**/*,themes/**/*,_config*.yml --port 4001 --reload-delay 1200 --no-notify --watch\""
   },
   "hexo": {
     "version": "8.1.2"
@@ -25,5 +26,9 @@
     "hexo-renderer-stylus": "^3.0.1",
     "hexo-server": "^3.0.0",
     "hexo-theme-landscape": "^1.0.0"
+  },
+  "devDependencies": {
+    "browser-sync": "^3.0.4",
+    "concurrently": "^10.0.7"
   }
 }

@@ -8,3 +8,5 @@ public/
 _multiconfig.yml
 # 草稿：只留在本地，不上传 GitHub
 source/_drafts/
+# VPS 部署服务器地址，不上传 GitHub
+deploy/vps/config.sh

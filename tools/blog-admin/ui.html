@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>博客管理后台</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #fff; --fg: #1f2430; --muted: #6b7280;
+    --line: #e5e7eb; --accent: #2563eb; --accent-fg: #fff;
+    --ok: #059669; --err: #dc2626; --radius: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0f1115; --card: #171a21; --fg: #e6e8ee; --muted: #9aa3b2; --line: #262b36; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 14px/1.6 -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  }
+  header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 22px; background: var(--card); border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 5;
+  }
+  header h1 { font-size: 16px; margin: 0; }
+  header .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+  header .spacer { flex: 1; }
+  a { color: var(--accent); text-decoration: none; }
+  main { max-width: 1080px; margin: 0 auto; padding: 20px; }
+  nav { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+  nav button {
+    border: 1px solid var(--line); background: var(--card); color: var(--fg);
+    padding: 8px 16px; border-radius: 999px; cursor: pointer; font-size: 14px;
+  }
+  nav button.active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  section { display: none; }
+  section.active { display: block; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 18px; margin-bottom: 16px;
+  }
+  .card h2 { font-size: 14px; margin: 0 0 14px; color: var(--muted); font-weight: 600; }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 6px; }
+  input[type=text], textarea {
+    width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); color: var(--fg); font: inherit; outline: none;
+  }
+  input[type=text]:focus, textarea:focus { border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 260px; font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row > div { flex: 1; min-width: 220px; }
+  button.primary, button.ghost, button.danger {
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 18px;
+    font: inherit; cursor: pointer;
+  }
+  button.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  button.ghost { background: var(--card); color: var(--fg); }
+  button.danger { background: transparent; color: var(--err); border-color: var(--err); }
+  button:disabled { opacity: .55; cursor: default; }
+  .actions { display: flex; gap: 10px; margin-top: 16px; align-items: center; flex-wrap: wrap; }
+  .hint { color: var(--muted); font-size: 12px; }
+  .avatar-box { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .avatar-box img {
+    width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--line); background: var(--bg);
+  }
+  .log {
+    background: #0b0d10; color: #c9d1d9; border-radius: 8px; padding: 12px;
+    font: 12px/1.5 ui-monospace, Consolas, monospace; white-space: pre-wrap;
+    max-height: 380px; overflow: auto; margin-top: 12px;
+  }
+  .toast {
+    position: fixed; right: 20px; bottom: 20px; padding: 11px 16px; border-radius: 8px;
+    background: var(--fg); color: var(--bg); opacity: 0; transform: translateY(8px);
+    transition: .2s; pointer-events: none; max-width: 70vw;
+  }
+  .toast.show { opacity: 1; transform: none; }
+  .toast.err { background: var(--err); color: #fff; }
+  .post-list { display: flex; flex-direction: column; gap: 4px; max-height: 460px; overflow: auto; }
+  .post-list button {
+    text-align: left; border: 1px solid transparent; background: transparent; color: var(--fg);
+    padding: 9px 10px; border-radius: 8px; cursor: pointer; font: inherit;
+  }
+  .post-list button:hover { background: var(--bg); }
+  .post-list button.active { border-color: var(--accent); }
+  .post-list small { color: var(--muted); display: block; }
+  .split { display: grid; grid-template-columns: 260px 1fr; gap: 16px; }
+  @media (max-width: 760px) { .split { grid-template-columns: 1fr; } }
+  iframe { width: 100%; height: 68vh; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+</style>
+</head>
+<body>
+<header>
+  <span class="dot"></span>
+  <h1>博客管理后台</h1>
+  <span class="spacer"></span>
+  <a id="siteLink" href="https://ggg2761367.github.io/GHydxfn/" target="_blank" rel="noopener">打开线上博客 ↗</a>
+</header>
+
+<main>
+  <nav>
+    <button data-tab="site" class="active">站点</button>
+    <button data-tab="posts">文章</button>
+    <button data-tab="preview">实时预览</button>
+    <button data-tab="publish">发布</button>
+  </nav>
+
+  <section id="tab-site" class="active">
+    <div class="card">
+      <h2>基本信息</h2>
+      <div class="row">
+        <div>
+          <label>博客标题</label>
+          <input type="text" id="f-title" autocomplete="off">
+        </div>
+        <div>
+          <label>作者名</label>
+          <input type="text" id="f-author" autocomplete="off">
+        </div>
+      </div>
+      <label>副标题</label>
+      <input type="text" id="f-subtitle" autocomplete="off">
+      <div class="actions">
+        <button class="primary" id="btn-save-site">保存并提交到仓库</button>
+        <span class="hint">保存后会 commit + push 到 main，GitHub Actions 约 1-2 分钟上线</span>
+      </div>
+      <div class="log" id="site-log" hidden></div>
+    </div>
+
+    <div class="card">
+      <h2>头像</h2>
+      <div class="avatar-box">
+        <img id="avatar-preview" alt="头像" src="">
+        <div>
+          <input type="file" id="avatar-file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+          <button class="ghost" id="btn-pick-avatar">选择图片并上传</button>
+          <p class="hint">支持 PNG / JPG / WebP / GIF，最大 5MB。上传后自动写入主题配置并提交到仓库。</p>
+        </div>
+      </div>
+      <div class="log" id="avatar-log" hidden></div>
+    </div>
+
+    <div class="card">
+      <h2>本机访问</h2>
+      <p class="hint">如果本机打不开博客，先修复 hosts 劫持（会弹出管理员授权）。</p>
+      <div class="actions">
+        <button class="ghost" id="btn-fix-hosts">修复本机访问</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-posts">
+    <div class="split">
+      <div class="card" style="margin:0">
+        <h2>文章列表</h2>
+        <div class="post-list" id="post-list"></div>
+        <div class="actions">
+          <button class="ghost" id="btn-new-post">新建文章</button>
+        </div>
+      </div>
+      <div class="card" style="margin:0">
+        <h2 id="editor-title">编辑文章</h2>
+        <textarea id="post-editor" placeholder="从左侧选择一篇文章，或新建一篇"></textarea>
+        <div class="actions">
+          <button class="primary" id="btn-save-post" disabled>保存并提交到仓库</button>
+          <span class="hint" id="post-file-hint"></span>
+        </div>
+        <div class="log" id="post-log" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-preview">
+    <div class="card">
+      <h2>本地实时预览</h2>
+      <p class="hint">自动选择空闲端口（默认 4000/4001），改文件保存会自动刷新。首次启动约 10 秒。</p>
+      <div class="actions">
+        <button class="primary" id="btn-preview-start">启动预览</button>
+        <button class="ghost" id="btn-preview-stop">停止预览</button>
+        <span class="hint" id="preview-state">未启动</span>
+      </div>
+    </div>
+    <div class="card">
+      <iframe id="preview-frame" src="about:blank"></iframe>
+    </div>
+  </section>
+
+  <section id="tab-publish">
+    <div class="card">
+      <h2>一键发布</h2>
+      <p class="hint">依次执行 hexo clean → generate → deploy，并把源码同步到 main。线上约 1-2 分钟后更新。</p>
+      <div class="actions">
+        <button class="primary" id="btn-publish">立即发布上线</button>
+        <span class="hint" id="publish-state"></span>
+      </div>
+      <div class="log" id="publish-log" hidden></div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const state = { post: null };
+
+function toast(msg, isErr) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isErr ? ' err' : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.className = 'toast', 3200);
+}
+
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  const data = await res.json().catch(() => ({ ok: false, error: '返回格式错误' }));
+  if (!res.ok && data.error) throw new Error(data.error);
+  return data;
+}
+
+function showLog(el, text) {
+  el.hidden = false;
+  el.textContent = text || '(无输出)';
+}
+
+/* ---------- 标签页 ---------- */
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('section').forEach(s => s.classList.toggle('active', s.id === 'tab-' + btn.dataset.tab));
+  };
+});
+
+/* ---------- 站点 ---------- */
+async function loadSite() {
+  const s = await api('/api/site');
+  $('#f-title').value = s.title || '';
+  $('#f-author').value = s.author || '';
+  $('#f-subtitle').value = s.subtitle || '';
+  if (s.avatarUrl) {
+    $('#avatar-preview').src = s.avatarUrl + (s.avatarUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
+  }
+}
+
+$('#btn-save-site').onclick = async () => {
+  const btn = $('#btn-save-site');
+  btn.disabled = true;
+  try {
+    const r = await api('/api/site', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: $('#f-title').value,
+        author: $('#f-author').value,
+        subtitle: $('#f-subtitle').value
+      })
+    });
+    showLog($('#site-log'), r.log || (r.changed ? '' : '没有改动'));
+    toast(r.ok ? '已提交到仓库' : '提交失败，看下方日志', !r.ok);
+    if (r.site) loadSite();
+  } catch (e) { toast(e.message, true); }
+  btn.disabled = false;
+};
+
+/* ---------- 头像 ---------- */
+$('#btn-pick-avatar').onclick = () => $('#avatar-file').click();
+$('#avatar-file').onchange = async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) return toast('图片超过 5MB', true);
+  const dataUrl = await new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+  toast('正在上传并提交...');
+  try {
+    const r = await api('/api/avatar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dataUrl })
+    });
+    showLog($('#avatar-log'), r.log || '');
+    if (r.avatarUrl) $('#avatar-preview').src = r.avatarUrl + '?t=' + Date.now();
+    toast(r.ok ? '头像已提交到仓库' : '提交失败，看日志', !r.ok);
+  } catch (err) { toast(err.message, true); }
+  e.target.value = '';
+};
+
+/* ---------- 文章 ---------- */
+async function loadPosts() {
+  const r = await api('/api/posts');
+  const box = $('#post-list');
+  box.innerHTML = '';
+  (r.posts || []).forEach(p => {
+    const b = document.createElement('button');
+    const strong = document.createElement('span');
+    strong.textContent = p.title || p.file;
+    const small = document.createElement('small');
+    small.textContent = p.file;
+    b.append(strong, small);
+    b.onclick = () => openPost(p.file, b);
+    box.appendChild(b);
+  });
+  if (!r.posts || !r.posts.length) box.innerHTML = '<p class="hint">还没有文章</p>';
+}
+
+async function openPost(file, btn) {
+  const r = await api('/api/post?file=' + encodeURIComponent(file));
+  state.post = file;
+  $('#post-editor').value = r.content || '';
+  $('#post-file-hint').textContent = file;
+  $('#btn-save-post').disabled = false;
+  document.querySelectorAll('.post-list button').forEach(b => b.classList.toggle('active', b === btn));
+}
+
+$('#btn-new-post').onclick = async () => {
+  const title = prompt('新文章标题：');
+  if (!title) return;
+  try {
+    const r = await api('/api/post/new', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title })
+    });
+    toast(r.ok ? '已创建并提交到仓库' : '创建失败', !r.ok);
+    await loadPosts();
+    if (r.file) {
+      const btn = [...document.querySelectorAll('.post-list button')].find(b => b.textContent.includes(r.file));
+      await openPost(r.file, btn);
+    }
+  } catch (e) { toast(e.message, true); }
+};
+
+$('#btn-save-post').onclick = async () => {
+  if (!state.post) return;
+  const btn = $('#btn-save-post');
+  btn.disabled = true;
+  try {
+    const r = await api('/api/post', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ file: state.post, content: $('#post-editor').value })
+    });
+    showLog($('#post-log'), r.log || '');
+    toast(r.ok ? '文章已提交到仓库' : '提交失败，看日志', !r.ok);
+  } catch (e) { toast(e.message, true); }
+  btn.disabled = false;
+};
+
+/* ---------- 预览 ---------- */
+$('#btn-preview-start').onclick = async () => {
+  try {
+    const r = await api('/api/preview/start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+    $('#preview-state').textContent = '启动中，约 10 秒后可访问';
+    setTimeout(() => {
+      if (!r.url) return;
+      $('#preview-frame').src = r.url + (r.url.includes('?') ? '&' : '?') + 't=' + Date.now();
+      $('#preview-state').textContent = '运行中：' + r.url;
+    }, 9000);
+    toast('预览启动中');
+  } catch (e) { toast(e.message, true); }
+};
+$('#btn-preview-stop').onclick = async () => {
+  await api('/api/preview/stop', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+  $('#preview-frame').src = 'about:blank';
+  $('#preview-state').textContent = '已停止';
+  toast('预览已停止');
+};
+
+/* ---------- 发布 ---------- */
+$('#btn-publish').onclick = async () => {
+  const btn = $('#btn-publish');
+  btn.disabled = true;
+  $('#publish-log').hidden = false;
+  $('#publish-log').textContent = '正在发布...';
+  $('#publish-state').textContent = '运行中';
+  try {
+    await api('/api/publish', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+    const timer = setInterval(async () => {
+      const job = await api('/api/job');
+      $('#publish-log').textContent = job.log || '正在发布...';
+      $('#publish-log').scrollTop = $('#publish-log').scrollHeight;
+      if (!job.running) {
+        clearInterval(timer);
+        $('#publish-state').textContent = job.code === 0 ? '完成' : '失败（看日志）';
+        toast(job.code === 0 ? '发布完成' : '发布失败，看日志', job.code !== 0);
+        btn.disabled = false;
+      }
+    }, 900);
+  } catch (e) {
+    toast(e.message, true);
+    btn.disabled = false;
+  }
+};
+
+/* ---------- 修复 hosts ---------- */
+$('#btn-fix-hosts').onclick = async () => {
+  try {
+    const r = await api('/api/fix-hosts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+    toast(r.message || '已启动');
+  } catch (e) { toast(e.message, true); }
+};
+
+loadSite().catch(e => toast(e.message, true));
+loadPosts().catch(() => {});
+api('/api/preview').then(r => { $('#preview-state').textContent = r.running ? '运行中：' + r.url : '未启动'; }).catch(() => {});
+</script>
+</body>
+</html>

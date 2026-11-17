@@ -1,0 +1,26 @@
+# 博客公开访问：http://服务器IP:8080/GHydxfn/
+# 与现有 _config.yml 的 root: /GHydxfn/ 完全对应，构建产物无需改动。
+:80 {
+	# 根路径与不带斜杠的子路径都归到站点首页
+	redir / /GHydxfn/ 302
+	redir /GHydxfn /GHydxfn/ 308
+
+	handle_path /GHydxfn/* {
+		root * /srv/blog/public
+		encode gzip
+
+		# HTML 不缓存，改完立刻可见；静态资源缓存 7 天
+		@html path *.html
+		header @html Cache-Control "no-cache"
+
+		@assets path *.css *.js *.woff2 *.woff *.ttf *.png *.jpg *.jpeg *.webp *.gif *.svg *.ico
+		header @assets Cache-Control "public, max-age=604800"
+
+		file_server
+	}
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+}

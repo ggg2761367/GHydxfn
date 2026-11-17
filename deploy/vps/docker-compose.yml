@@ -1,0 +1,21 @@
+services:
+  blog:
+    image: caddy:2-alpine
+    container_name: blog
+    restart: unless-stopped
+    ports:
+      - "8080:80"            # 对外端口；要换端口只改冒号左边
+    volumes:
+      - ./public:/srv/blog/public:ro
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  caddy_data:
+  caddy_config:

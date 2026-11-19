@@ -115,6 +115,84 @@ function webUrl(root, p) {
   return root + p.replace(/^\/+/, '');
 }
 
+/* ---------------- 文章 front-matter ---------------- */
+function normalizeList(v) {
+  if (Array.isArray(v)) return v.map(x => String(x).trim()).filter(Boolean);
+  return String(v || '').split(/[,，、]/).map(s => s.trim()).filter(Boolean);
+}
+function parseBlocks(fm) {
+  const blocks = [];
+  let cur = null;
+  for (const line of fm.split(/\r?\n/)) {
+    const m = line.match(/^([A-Za-z0-9_-]+):(.*)$/);
+    if (m) {
+      cur = { key: m[1], lines: [line] };
+      blocks.push(cur);
+    } else if (cur) {
+      cur.lines.push(line);
+    } else if (line.trim()) {
+      blocks.push({ key: '', lines: [line] });
+    }
+  }
+  return blocks;
+}
+function scalarOf(blocks, key) {
+  const b = blocks.find(x => x.key === key);
+  if (!b) return '';
+  return unquote(b.lines[0].replace(new RegExp('^' + key + ':[ \\t]*'), ''));
+}
+function listOf(blocks, key) {
+  const b = blocks.find(x => x.key === key);
+  if (!b) return [];
+  const first = b.lines[0].replace(new RegExp('^' + key + ':[ \\t]*'), '').trim();
+  if (first) {
+    let v = first;
+    if (v.startsWith('[') && v.endsWith(']')) v = v.slice(1, -1);
+    return v.split(/[,，、]/).map(s => unquote(s.trim())).filter(Boolean);
+  }
+  return b.lines.slice(1)
+    .map(l => (l.match(/^\s*-\s*(.*)$/) || [])[1])
+    .filter(v => v !== undefined)
+    .map(v => unquote(v.trim()).replace(/^['"]|['"]$/g, ''))
+    .filter(Boolean);
+}
+function splitFrontMatter(text) {
+  const m = /^﻿?---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(String(text || ''));
+  if (!m) return { blocks: [], body: String(text || '') };
+  return { blocks: parseBlocks(m[1]), body: String(text).slice(m[0].length) };
+}
+function serializePost(blocks, meta, body) {
+  const known = new Set(['title', 'date', 'cover', 'categories', 'tags']);
+  const out = [];
+  const seen = new Set();
+  for (const b of blocks) {
+    if (!known.has(b.key)) {
+      if (b.key) out.push(...b.lines);
+      continue;
+    }
+    seen.add(b.key);
+    if (b.key === 'title' && meta.title) out.push('title: ' + quoteYaml(meta.title));
+    if (b.key === 'date' && meta.date) out.push('date: ' + String(meta.date).trim());
+    if (b.key === 'cover' && meta.cover) out.push('cover: ' + String(meta.cover).trim());
+    if (b.key === 'categories') {
+      const l = normalizeList(meta.categories);
+      if (l.length) out.push('categories: [' + l.map(quoteYaml).join(', ') + ']');
+    }
+    if (b.key === 'tags') {
+      const l = normalizeList(meta.tags);
+      if (l.length) out.push('tags: [' + l.map(quoteYaml).join(', ') + ']');
+    }
+  }
+  if (!seen.has('title') && meta.title) out.push('title: ' + quoteYaml(meta.title));
+  if (!seen.has('date') && meta.date) out.push('date: ' + String(meta.date).trim());
+  if (!seen.has('cover') && meta.cover) out.push('cover: ' + String(meta.cover).trim());
+  const cats = normalizeList(meta.categories);
+  if (!seen.has('categories') && cats.length) out.push('categories: [' + cats.map(quoteYaml).join(', ') + ']');
+  const tags = normalizeList(meta.tags);
+  if (!seen.has('tags') && tags.length) out.push('tags: [' + tags.map(quoteYaml).join(', ') + ']');
+  return '---\n' + out.join('\n') + '\n---\n\n' + String(body || '').replace(/^\s*\n+/, '');
+}
+
 /* ---------------- 站点信息 ---------------- */
 async function readSite() {
   const [cfg, theme] = await Promise.all([
@@ -336,9 +414,11 @@ const server = http.createServer(async (req, res) => {
 
       if (p === '/api/post') {
         const { base, full } = safePost(body.file);
-        if (typeof body.content !== 'string') throw new Error('缺少内容');
+        const old = await fsp.readFile(full, 'utf8').catch(() => '');
+        const { blocks } = splitFrontMatter(old);
+        const content = serializePost(blocks, body.meta || {}, body.body || '');
         await fsp.mkdir(POSTS, { recursive: true });
-        await fsp.writeFile(full, body.content, 'utf8');
+        await fsp.writeFile(full, content, 'utf8');
         const r = await commitPush('后台保存文章 ' + base);
         return json(res, 200, { ok: r.ok, ...r });
       }
@@ -353,7 +433,13 @@ const server = http.createServer(async (req, res) => {
         const pad = n => String(n).padStart(2, '0');
         const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
         await fsp.mkdir(POSTS, { recursive: true });
-        await fsp.writeFile(full, `---\ntitle: ${title}\ndate: ${date}\ntags:\ncategories:\n---\n\n`, 'utf8');
+        await fsp.writeFile(full, serializePost([], {
+          title,
+          date,
+          cover: '',
+          categories: normalizeList(body.categories),
+          tags: normalizeList(body.tags)
+        }, body.body || ''), 'utf8');
         const r = await commitPush('后台新建文章 ' + base);
         return json(res, 200, { ok: r.ok, ...r, file: base });
       }
@@ -376,16 +462,43 @@ const server = http.createServer(async (req, res) => {
       const list = [];
       for (const f of files) {
         const text = await fsp.readFile(path.join(POSTS, f), 'utf8');
-        const title = (text.match(/^title:\s*(.*)$/m) || [])[1] || f;
-        const date = (text.match(/^date:\s*(.*)$/m) || [])[1] || '';
-        list.push({ file: f, title: unquote(title), date: date.trim() });
+        const { blocks } = splitFrontMatter(text);
+        list.push({
+          file: f,
+          title: scalarOf(blocks, 'title') || f,
+          date: scalarOf(blocks, 'date'),
+          categories: listOf(blocks, 'categories'),
+          tags: listOf(blocks, 'tags')
+        });
       }
       list.sort((a, b) => String(b.date).localeCompare(String(a.date)));
       return json(res, 200, { ok: true, posts: list });
     }
+    if (req.method === 'GET' && p === '/api/taxonomy') {
+      await fsp.mkdir(POSTS, { recursive: true });
+      const files = (await fsp.readdir(POSTS)).filter(f => /\.md$/i.test(f));
+      const cats = new Set(), tags = new Set();
+      for (const f of files) {
+        const { blocks } = splitFrontMatter(await fsp.readFile(path.join(POSTS, f), 'utf8'));
+        listOf(blocks, 'categories').forEach(x => cats.add(x));
+        listOf(blocks, 'tags').forEach(x => tags.add(x));
+      }
+      return json(res, 200, { ok: true, categories: [...cats].sort(), tags: [...tags].sort() });
+    }
     if (req.method === 'GET' && p === '/api/post') {
       const { full } = safePost(url.searchParams.get('file'));
-      return json(res, 200, { ok: true, content: await fsp.readFile(full, 'utf8') });
+      const { blocks, body } = splitFrontMatter(await fsp.readFile(full, 'utf8'));
+      return json(res, 200, {
+        ok: true,
+        meta: {
+          title: scalarOf(blocks, 'title'),
+          date: scalarOf(blocks, 'date'),
+          cover: scalarOf(blocks, 'cover'),
+          categories: listOf(blocks, 'categories'),
+          tags: listOf(blocks, 'tags')
+        },
+        body
+      });
     }
     if (req.method === 'GET' && p === '/api/preview') {
       return json(res, 200, { ok: true, running: preview.running, url: preview.url });

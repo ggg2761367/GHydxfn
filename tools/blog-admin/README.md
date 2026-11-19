@@ -10,6 +10,8 @@
 | 站点 | 改标题 / 副标题 / 作者 | 写入 `_config.yml` → `git commit` → `git push origin main` |
 | 站点 | 上传头像 | 存到 `source/img/uploads/`，更新 `_config.butterfly.yml` 的 `avatar.img`，并提交推送 |
 | 文章 | 新建 / 编辑 Markdown | 写入 `source/_posts/`，并提交推送 |
+| 文章 | 发布时间、栏目、标签、封面 | 写入 front-matter，Hexo 自动生成 `/categories/`、`/tags/` 页面 |
+| 文章 | 上传正文图片 / 封面图 | 存到 `source/img/uploads/`，正文自动插入 Markdown，封面写入 `cover` |
 | 实时预览 | 启动预览 | 自动挑空闲端口，内嵌 iframe，保存文件自动刷新 |
 | 发布 | 立即发布上线 | `hexo clean` → `generate` → `deploy`，再同步源码到 main |
 

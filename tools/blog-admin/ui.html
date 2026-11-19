@@ -42,11 +42,11 @@
   }
   .card h2 { font-size: 14px; margin: 0 0 14px; color: var(--muted); font-weight: 600; }
   label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 6px; }
-  input[type=text], textarea {
+  input[type=text], input[type=datetime-local], textarea {
     width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px;
     background: var(--bg); color: var(--fg); font: inherit; outline: none;
   }
-  input[type=text]:focus, textarea:focus { border-color: var(--accent); }
+  input[type=text]:focus, input[type=datetime-local]:focus, textarea:focus { border-color: var(--accent); }
   textarea { resize: vertical; min-height: 260px; font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
   .row { display: flex; gap: 12px; flex-wrap: wrap; }
   .row > div { flex: 1; min-width: 220px; }
@@ -161,9 +161,39 @@
       </div>
       <div class="card" style="margin:0">
         <h2 id="editor-title">编辑文章</h2>
+        <label>标题</label>
+        <input type="text" id="f-post-title" autocomplete="off">
+        <div class="row">
+          <div>
+            <label>发布时间</label>
+            <input type="datetime-local" id="f-post-date">
+          </div>
+          <div>
+            <label>栏目（分类；多个逗号分隔表示层级）</label>
+            <input type="text" id="f-post-cats" list="dl-cats" placeholder="例如：技术" autocomplete="off">
+          </div>
+          <div>
+            <label>标签（逗号分隔）</label>
+            <input type="text" id="f-post-tags" list="dl-tags" placeholder="例如：Hexo, 建站" autocomplete="off">
+          </div>
+        </div>
+        <datalist id="dl-cats"></datalist>
+        <datalist id="dl-tags"></datalist>
+        <label>封面图</label>
+        <div class="avatar-box" style="gap:12px">
+          <img id="cover-preview" alt="封面" style="width:160px;height:90px;border-radius:8px;object-fit:cover;display:none">
+          <div>
+            <input type="file" id="cover-file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+            <button class="ghost" id="btn-cover">上传封面</button>
+            <p class="hint">留空则使用主题默认封面</p>
+          </div>
+        </div>
+        <label>正文（Markdown）</label>
         <textarea id="post-editor" placeholder="从左侧选择一篇文章，或新建一篇"></textarea>
         <div class="actions">
           <button class="primary" id="btn-save-post" disabled>保存并提交到仓库</button>
+          <input type="file" id="inline-file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+          <button class="ghost" id="btn-inline-img" disabled>上传正文图片</button>
           <span class="hint" id="post-file-hint"></span>
         </div>
         <div class="log" id="post-log" hidden></div>
@@ -203,7 +233,7 @@
 
 <script>
 const $ = s => document.querySelector(s);
-const state = { post: null };
+const state = { post: null, cover: '' };
 
 function toast(msg, isErr) {
   const t = $('#toast');
@@ -291,6 +321,49 @@ $('#avatar-file').onchange = async e => {
 };
 
 /* ---------- 文章 ---------- */
+function toInputDate(v) {
+  const m = String(v || '').match(/^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})/);
+  return m ? m[1] + 'T' + m[2] : '';
+}
+function fromInputDate(v) {
+  if (!v) return '';
+  return v.replace('T', ' ') + (v.length === 16 ? ':00' : '');
+}
+function coverSrc(p) {
+  if (!p) return '';
+  if (/^https?:/.test(p)) return p;
+  return '/preview' + p.replace(/^\/GHydxfn/, '');
+}
+function setCover(p) {
+  state.cover = p || '';
+  const img = $('#cover-preview');
+  if (state.cover) { img.src = coverSrc(state.cover); img.style.display = ''; }
+  else { img.removeAttribute('src'); img.style.display = 'none'; }
+}
+function readAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+function chooseFile(input) {
+  return new Promise(resolve => {
+    input.value = '';
+    input.onchange = () => resolve(input.files[0] || null);
+    input.click();
+  });
+}
+
+async function loadTaxonomy() {
+  try {
+    const r = await api('/api/taxonomy');
+    $('#dl-cats').innerHTML = (r.categories || []).map(x => '<option value="' + x.replace(/"/g, '&quot;') + '">').join('');
+    $('#dl-tags').innerHTML = (r.tags || []).map(x => '<option value="' + x.replace(/"/g, '&quot;') + '">').join('');
+  } catch (_) { }
+}
+
 async function loadPosts() {
   const r = await api('/api/posts');
   const box = $('#post-list');
@@ -300,7 +373,8 @@ async function loadPosts() {
     const strong = document.createElement('span');
     strong.textContent = p.title || p.file;
     const small = document.createElement('small');
-    small.textContent = p.file;
+    const tags = (p.categories || []).concat(p.tags || []);
+    small.textContent = [p.date, tags.length ? tags.join(' / ') : ''].filter(Boolean).join(' · ');
     b.append(strong, small);
     b.onclick = () => openPost(p.file, b);
     box.appendChild(b);
@@ -311,9 +385,15 @@ async function loadPosts() {
 async function openPost(file, btn) {
   const r = await api('/api/post?file=' + encodeURIComponent(file));
   state.post = file;
-  $('#post-editor').value = r.content || '';
+  $('#f-post-title').value = r.meta.title || '';
+  $('#f-post-date').value = toInputDate(r.meta.date);
+  $('#f-post-cats').value = (r.meta.categories || []).join(', ');
+  $('#f-post-tags').value = (r.meta.tags || []).join(', ');
+  setCover(r.meta.cover);
+  $('#post-editor').value = r.body || '';
   $('#post-file-hint').textContent = file;
   $('#btn-save-post').disabled = false;
+  $('#btn-inline-img').disabled = false;
   document.querySelectorAll('.post-list button').forEach(b => b.classList.toggle('active', b === btn));
 }
 
@@ -328,6 +408,7 @@ $('#btn-new-post').onclick = async () => {
     });
     toast(r.ok ? '已创建并提交到仓库' : '创建失败', !r.ok);
     await loadPosts();
+    await loadTaxonomy();
     if (r.file) {
       const btn = [...document.querySelectorAll('.post-list button')].find(b => b.textContent.includes(r.file));
       await openPost(r.file, btn);
@@ -343,12 +424,62 @@ $('#btn-save-post').onclick = async () => {
     const r = await api('/api/post', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ file: state.post, content: $('#post-editor').value })
+      body: JSON.stringify({
+        file: state.post,
+        meta: {
+          title: $('#f-post-title').value,
+          date: fromInputDate($('#f-post-date').value),
+          cover: state.cover,
+          categories: $('#f-post-cats').value,
+          tags: $('#f-post-tags').value
+        },
+        body: $('#post-editor').value
+      })
     });
     showLog($('#post-log'), r.log || '');
     toast(r.ok ? '文章已提交到仓库' : '提交失败，看日志', !r.ok);
+    await loadPosts();
+    await loadTaxonomy();
   } catch (e) { toast(e.message, true); }
   btn.disabled = false;
+};
+
+$('#btn-inline-img').onclick = async () => {
+  const file = await chooseFile($('#inline-file'));
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) return toast('图片超过 5MB', true);
+  try {
+    const dataUrl = await readAsDataUrl(file);
+    const r = await api('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dataUrl })
+    });
+    const ta = $('#post-editor');
+    const start = ta.selectionStart ?? ta.value.length;
+    const end = ta.selectionEnd ?? ta.value.length;
+    const md = '\n' + r.markdown + '\n';
+    ta.value = ta.value.slice(0, start) + md + ta.value.slice(end);
+    ta.selectionStart = ta.selectionEnd = start + md.length;
+    ta.focus();
+    toast('图片已上传，保存文章后一起提交');
+  } catch (e) { toast(e.message, true); }
+};
+
+$('#btn-cover').onclick = async () => {
+  const file = await chooseFile($('#cover-file'));
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) return toast('图片超过 5MB', true);
+  try {
+    const dataUrl = await readAsDataUrl(file);
+    const r = await api('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dataUrl })
+    });
+    setCover(r.path);
+    toast('封面已设置，保存文章后一起提交');
+  } catch (e) { toast(e.message, true); }
 };
 
 /* ---------- 预览 ---------- */
@@ -407,6 +538,7 @@ $('#btn-fix-hosts').onclick = async () => {
 
 loadSite().catch(e => toast(e.message, true));
 loadPosts().catch(() => {});
+loadTaxonomy().catch(() => {});
 api('/api/preview').then(r => { $('#preview-state').textContent = r.running ? '运行中：' + r.url : '未启动'; }).catch(() => {});
 </script>
 </body>

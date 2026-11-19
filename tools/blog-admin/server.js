@@ -408,7 +408,7 @@ const server = http.createServer(async (req, res) => {
           ok: true,
           path: webPath,
           url: webUrl(rootOf(cfg), webPath),
-          markdown: '![](' + webUrl(rootOf(cfg), webPath) + ')'
+          markdown: '![](' + webPath + ')'
         });
       }
 

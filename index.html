@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>XX guo O_O 的 blog - 给时间更多的角度和方式考察我</title><meta name="author" content="XX guo"><meta name="copyright" content="XX guo"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="高质量&#39;博客&#39;分享&#39;成长">
+<meta property="og:type" content="website">
+<meta property="og:title" content="XX guo O_O 的 blog">
+<meta property="og:url" content="https://ggg2761367.github.io/GHydxfn/index.html">
+<meta property="og:site_name" content="XX guo O_O 的 blog">
+<meta property="og:description" content="高质量&#39;博客&#39;分享&#39;成长">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ggg2761367.github.io/GHydxfn/img/butterfly-icon.png">
+<meta property="article:author" content="XX guo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ggg2761367.github.io/GHydxfn/img/butterfly-icon.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/GHydxfn/img/favicon.png"><link rel="canonical" href="https://ggg2761367.github.io/GHydxfn/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/GHydxfn/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/GHydxfn/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'XX guo O_O 的 blog',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/GHydxfn/"><span class="site-name">XX guo O_O 的 blog</span></a></span><div id="menus"></div></nav><div id="site-info"><h1 id="site-title">XX guo O_O 的 blog</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/GHydxfn/2026/11/21/%E8%BF%91%E6%97%A5%E5%BF%83%E5%BE%97/" title="近日心得">近日心得</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-21T11:56:00.000Z" title="发表于 2026-11-21 11:56:00">2026-11-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/GHydxfn/categories/%E6%96%87%E5%8C%96/">文化</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/GHydxfn/categories/%E6%96%87%E5%8C%96/%E4%BC%A0%E6%89%BF%E4%B8%8E%E6%80%9D%E8%80%83/">传承与思考</a></span></div><div class="content">多少事，从来急光阴转，天地迫一万年太久，只争朝夕 中美建交的局面，主席没看到，总理也没看到但这是他们所殷切希望的可是那天的局面是他们用自己的行动一小步一小步的促成的我不由潸然泪下 昨天遇到一个很有技术力很有想法和作风的一个同学，叫林诚松，这里详细提一嘴吧，成都本地人，2007年10月左右生人，高中学习偏科严重，自述化学从来没有考过及格，高考四十多分，语文方面，自述有文字阅读障碍，但高考发挥出色，考了110分，高考总分590几的分数考上了成都理工大学。但预期学校是重庆邮电大学的计算机，自身在高中学习了计算机和信息竞赛等方面的知识，本人也有音乐方面的兴趣和怪异。暂且认定酷爱技术力，手里有多篇论文在构思和写作，有一篇投稿，对机器学习、深度学习、神经网络等方面有一定程度的了解。林同学自述在成都理工大学没有几个老师在计算机视觉和代码水平有他出色，同时和许多博士生导师有联系以及合作，英语水平过了四级，暂时未通过六级，但口语水品以及语感大致可以和外国人正常沟通，自述在上大一和艺术鉴赏课的老师起口角，丢失在本院（环境与土木工程学院）的保研资格，并坦言自己的梦中情校是复旦大学。和我交谈时，不愿被称...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/GHydxfn/2026/11/19/C%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%B8%80%E5%A4%A9%E5%AD%A6%E4%B9%A0/" title="C语言第一天学习">C语言第一天学习</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-19T15:10:00.000Z" title="发表于 2026-11-19 15:10:00">2026-11-19</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/GHydxfn/categories/C%E8%AF%AD%E8%A8%80/">C语言</a></span></div><div class="content">C语言的标准输入&#x2F;输出1.printf函数    放弃蓝桥云课先听浙大翁恺1.1.1计算机如何解决问题？计算机只会做一件事，按照你要的每一步往下做人:what to do计算机:how to do    算法计算机做的所有事情都是计算 1.1.2 计算机的思维计算机看不懂方程，只能代数运算————枚举法程序的执行解释：借助一个程序，那个程序能试图理解你的程序，然后按照你的要求执行编译：把你的程序翻译成机器语言，之后使用自己翻译过的程序，来执行程序。语言本身没有解释与编译区分 1.2.1 为什么是Cc like 语言语言带来的库 1.2.2简单历史无1.2.3编程软件 操作系统 嵌入式系统 驱动系统 底层驱动 图形引擎、图像处理、声音效果C语言是一种工业语言IDE（集成开发环境） 1.3.1第一个C程序#include &lt; stadio.h&gt; int main(){     printf(“Hello World!\n”);  return 0;  }输出“里面的内容叫做“字符串”&#x2F;n表示需要在输出的结果后面换一行 1.3.2详解第一个程序 1.3....</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/GHydxfn/2026/06/19/article/" title="手稿五篇">手稿五篇</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-06-19T11:49:54.000Z" title="发表于 2026-06-19 11:49:54">2026-06-19</time></span></div><div class="content">第一篇（第一张手稿） 迷惘的不是我这无味的青春，是我心慌意乱止步不前的十七、十八。时间本是一条轨道，它肆意横行却又绝对公平地给予，所以我无法去怪罪时间太少让我不能悟道三千，尽管我从未停止挥霍。六道禅言，本无一物，何处惹尘埃，可来到这世上的人都沾满尘埃，科技的浪潮席卷世上一切清静之地，人须跳入这大海茫茫才能到心中彼岸，可这样一来，大海成了烂泥，理想被深埋。安逸或是假象，行进必然不止，美好的生活应是真的，一路的颠簸也该是真的，但短暂的幸福应是疲惫生活里的一缕光，存在不会被遗忘，物质宇宙是一个锚点，美好永远是相对的，幸福或因个人的感性变得两样，所以残酷也是真的，倘若这世上有人生而知之，他会被社会的复杂压垮，全无坚定信念，会倾刻成为一生背负软弱之名的人。那么迷惘是人生的隐身衣，在生生不息的浪涛里，它让人不随波前进，留下审思自我的机会，当然，有人或时刻迷惘，对一切不安，也有人一生坚定，为一种理想矢志不渝。世界存在有真也有真假，毕竟真理门打开的或是虚假世界。所以幸福是人坚信存在的真理，它的尽头指向永恒的美好，那时会消灭客观的残酷，于是迷惘永恒不止，古人仰望星空，初生的灵智让他们想要挥拳那无垠...</div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/GHydxfn/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/GHydxfn/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">XX guo</div><div class="author-info-description">高质量'博客'分享'成长</div><div class="site-data"><a href="/GHydxfn/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/GHydxfn/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/GHydxfn/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ggg2761367"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/GHydxfn/2026/11/21/%E8%BF%91%E6%97%A5%E5%BF%83%E5%BE%97/" title="近日心得">近日心得</a><time datetime="2026-11-21T11:56:00.000Z" title="发表于 2026-11-21 11:56:00">2026-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/GHydxfn/2026/11/19/C%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%B8%80%E5%A4%A9%E5%AD%A6%E4%B9%A0/" title="C语言第一天学习">C语言第一天学习</a><time datetime="2026-11-19T15:10:00.000Z" title="发表于 2026-11-19 15:10:00">2026-11-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/GHydxfn/2026/06/19/article/" title="手稿五篇">手稿五篇</a><time datetime="2026-06-19T11:49:54.000Z" title="发表于 2026-06-19 11:49:54">2026-06-19</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/GHydxfn/categories/C%E8%AF%AD%E8%A8%80/"><span class="card-category-list-name">C语言</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/GHydxfn/categories/%E6%96%87%E5%8C%96/"><span class="card-category-list-name">文化</span><span class="card-category-list-count">1</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/GHydxfn/categories/%E6%96%87%E5%8C%96/%E4%BC%A0%E6%89%BF%E4%B8%8E%E6%80%9D%E8%80%83/"><span class="card-category-list-name">传承与思考</span><span class="card-category-list-count">1</span></a></li></ul></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/GHydxfn/tags/%E6%8A%80%E6%9C%AF/" style="font-size: 1.1em; color: #999">技术</a> <a href="/GHydxfn/tags/%E6%80%9D%E8%80%83/" style="font-size: 1.1em; color: #999">思考</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/GHydxfn/archives/2026/11/">
+            <span class="card-archive-list-date">
+              十一月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/GHydxfn/archives/2026/06/">
+            <span class="card-archive-list-date">
+              六月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">3</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-11-21T03:57:16.444Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By XX guo</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/GHydxfn/js/utils.js?v=5.5.4"></script><script src="/GHydxfn/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>C语言第一天学习 | XX guo O_O 的 blog</title><meta name="author" content="XX guo"><meta name="copyright" content="XX guo"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="C语言的标准输入&#x2F;输出1.printf函数    放弃蓝桥云课先听浙大翁恺1.1.1计算机如何解决问题？计算机只会做一件事，按照你要的每一步往下做人:what to do计算机:how to do    算法计算机做的所有事情都是计算 1.1.2 计算机的思维计算机看不懂方程，只能代数运算————枚举法程序的执行解释：借助一个程序，那个程序能试图理解你的程序，然后按照你的要求执行编译：把">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言第一天学习">
+<meta property="og:url" content="https://ggg2761367.github.io/GHydxfn/2026/11/19/C%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%B8%80%E5%A4%A9%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="XX guo O_O 的 blog">
+<meta property="og:description" content="C语言的标准输入&#x2F;输出1.printf函数    放弃蓝桥云课先听浙大翁恺1.1.1计算机如何解决问题？计算机只会做一件事，按照你要的每一步往下做人:what to do计算机:how to do    算法计算机做的所有事情都是计算 1.1.2 计算机的思维计算机看不懂方程，只能代数运算————枚举法程序的执行解释：借助一个程序，那个程序能试图理解你的程序，然后按照你的要求执行编译：把">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ggg2761367.github.io/GHydxfn/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-11-19T15:10:00.000Z">
+<meta property="article:modified_time" content="2026-11-21T03:57:04.102Z">
+<meta property="article:author" content="XX guo">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ggg2761367.github.io/GHydxfn/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "C语言第一天学习",
+  "url": "https://ggg2761367.github.io/GHydxfn/2026/11/19/C%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%B8%80%E5%A4%A9%E5%AD%A6%E4%B9%A0/",
+  "image": "https://ggg2761367.github.io/GHydxfn/img/butterfly-icon.png",
+  "datePublished": "2026-11-19T15:10:00.000Z",
+  "dateModified": "2026-11-21T03:57:04.102Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "XX guo",
+      "url": "https://ggg2761367.github.io/GHydxfn"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/GHydxfn/img/favicon.png"><link rel="canonical" href="https://ggg2761367.github.io/GHydxfn/2026/11/19/C%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%B8%80%E5%A4%A9%E5%AD%A6%E4%B9%A0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/GHydxfn/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/GHydxfn/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'C语言第一天学习',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/GHydxfn/"><span class="site-name">XX guo O_O 的 blog</span></a><a class="nav-page-title" href="/GHydxfn/"><span class="site-name">C语言第一天学习</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">C语言第一天学习</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-11-19T15:10:00.000Z" title="发表于 2026-11-19 15:10:00">2026-11-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-21T03:57:04.102Z" title="更新于 2026-11-21 03:57:04">2026-11-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/GHydxfn/categories/C%E8%AF%AD%E8%A8%80/">C语言</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>C语言的标准输入&#x2F;输出<br>1.printf函数</p>
+<p><img src="/GHydxfn/img/uploads/1795073059457-76a388.png"></p>
+<p><img src="/GHydxfn/img/uploads/1795073019670-6e6061.png"></p>
+<p><img src="/GHydxfn/img/uploads/1795072311617-e6af55.png"></p>
+<p>放弃蓝桥云课<br>先听浙大翁恺<br>1.1.1<br>计算机如何解决问题？<br>计算机只会做一件事，按照你要的每一步往下做<br>人:what to do<br>计算机:how to do</p>
+<p>   算法<br>计算机做的所有事情都是计算</p>
+<p>1.1.2 计算机的思维<br>计算机看不懂方程，只能代数运算————枚举法<br>程序的执行<br>解释：借助一个程序，那个程序能试图理解你的程序，然后按照你的要求执行<br>编译：把你的程序翻译成机器语言，之后使用自己翻译过的程序，来执行程序。<br>语言本身没有解释与编译区分</p>
+<p>1.2.1 为什么是C<br>c like 语言<br>语言带来的库</p>
+<p>1.2.2简单历史<br>无<br>1.2.3编程软件<br> 操作系统<br> 嵌入式系统<br> 驱动系统<br> 底层驱动<br> 图形引擎、图像处理、声音效果<br>C语言是一种工业语言<br>IDE（集成开发环境）</p>
+<p>1.3.1第一个C程序<br>#include &lt; stadio.h&gt;</p>
+<p>int main()<br>{<br>     printf(“Hello World!\n”);</p>
+<pre><code> return 0;
+</code></pre>
+<p>}<br>输出<br>“里面的内容叫做“字符串”<br>&#x2F;n表示需要在输出的结果后面换一行</p>
+<p>1.3.2详解第一个程序</p>
+<p>1.3.3做点计算<br>int main()<br>{<br>     printf(“%d”,12+34); &#x2F;&#x2F; %d说明后面有一个整数要输出在这个位置上</p>
+<pre><code> return 0;
+</code></pre>
+<p>}</p>
+<p>1.3.4MacOSX如何运行<br>无</p>
+<p>2.1.1第二周概述</p>
+<p>2.1.2变量定义<br>需要：1、有地方放输入的数字；<br>      2、有办法输入数字；<br>      3、输入的数字能参与运算。</p>
+<p>change.c<br>变量<br> int price &#x3D; 0;<br>变量是一个保存数据的地方<br>变量的一般形式<br>&lt;类型名称&gt;&lt;变量名称&gt;<br>变量的名字是一种“标识符”，意思是它是用来识别这个和那个的不同的名字。<br>C语言的保存字</p>
+<p>2.1.3<br>变量赋值与初始化<br>int price &#x3D; 0<br>赋值<br>“&#x3D;”在计算机里是一个动作<br>初始化<br>不进行初始化在部分编译器运行会随机给出字符<br>变量初始化<br>&lt;类型名称&gt;&lt;变量名称&gt;&#x3D;&lt;初始值&gt;<br>多个变量在一行时，每一个变量单独赋予变量<br>变量类型<br>C是一种有类型的语言</p>
+<p>【读整数】<br>scanf(“%d”,&amp;price);<br>要求scanf这个函数读入下一个整数，读到的结果赋值给变量price<br>小心price前面的&amp;</p>
+<p>2.1.4变量输入</p>
+<p>2.1.5<br>【常量】<br>const是一个修饰符，加在int的前面，初始化之后就不能再修改<br>【try】<br> plus.c<br>int a;<br>int b;<br>printf(“请输入两个整数：”);<br>scanf(“%d %d”,&amp;a,&amp;b);<br>printf(“%d+%d&#x3D;%d\n”,a,b,a+b);<br>出现在scanf里的东西一定是要用户输入的东西，不是你想要输出的东西</p>
+<p>2.1.6 浮点数<br>两个整数的运算的结果只能是整数<br>浮点数：带小数点的数<br>在C中的整数与浮点数计算，会使整数变成浮点数<br>两种方案<br>一、整数修改为浮点数<br>二、inch是定义为int类型的变量，如果把int换成double，我们就把它改为double类型的浮点数变量了。<br>对于double使用%lf</p>
+<p>2.2.1 表达式<br>【运算符】</p>
+<p>程序运行当中一般要想两件事情<br>第一件事 我这个问题解决的过程当中会得到什么数据<br>我这个数据输入进来我就要表达它<br>第二我们有了这个数据之后要怎么计算</p>
+<p>对程序设计<br>遵循四则运算<br>【数字时钟】：对分钟进行取余</p>
+<p>2.2.2<br>运算符优先级<br>【求平均值】</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ggg2761367.github.io/GHydxfn">XX guo</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ggg2761367.github.io/GHydxfn/2026/11/19/C%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%B8%80%E5%A4%A9%E5%AD%A6%E4%B9%A0/">https://ggg2761367.github.io/GHydxfn/2026/11/19/C%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%B8%80%E5%A4%A9%E5%AD%A6%E4%B9%A0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ggg2761367.github.io/GHydxfn" target="_blank">XX guo O_O 的 blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/GHydxfn/tags/%E6%8A%80%E6%9C%AF/">技术</a></div><div class="post-share"><div class="social-share" data-image="/GHydxfn/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/GHydxfn/2026/11/21/%E8%BF%91%E6%97%A5%E5%BF%83%E5%BE%97/" title="近日心得"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">近日心得</div></div><div class="info-2"><div class="info-item-1">多少事，从来急光阴转，天地迫一万年太久，只争朝夕 中美建交的局面，主席没看到，总理也没看到但这是他们所殷切希望的可是那天的局面是他们用自己的行动一小步一小步的促成的我不由潸然泪下 昨天遇到一个很有技术力很有想法和作风的一个同学，叫林诚松，这里详细提一嘴吧，成都本地人，2007年10月左右生人，高中学习偏科严重，自述化学从来没有考过及格，高考四十多分，语文方面，自述有文字阅读障碍，但高考发挥出色，考了110分，高考总分590几的分数考上了成都理工大学。但预期学校是重庆邮电大学的计算机，自身在高中学习了计算机和信息竞赛等方面的知识，本人也有音乐方面的兴趣和怪异。暂且认定酷爱技术力，手里有多篇论文在构思和写作，有一篇投稿，对机器学习、深度学习、神经网络等方面有一定程度的了解。林同学自述在成都理工大学没有几个老师在计算机视觉和代码水平有他出色，同时和许多博士生导师有联系以及合作，英语水平过了四级，暂时未通过六级，但口语水品以及语感大致可以和外国人正常沟通，自述在上大一和艺术鉴赏课的老师起口角，丢失在本院（环境与土木工程学院）的保研资格，并坦言自己的梦中情校是复旦大学。和我交谈时，不愿被称...</div></div></div></a><a class="pagination-related" href="/GHydxfn/2026/06/19/article/" title="手稿五篇"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">手稿五篇</div></div><div class="info-2"><div class="info-item-1">第一篇（第一张手稿） 迷惘的不是我这无味的青春，是我心慌意乱止步不前的十七、十八。时间本是一条轨道，它肆意横行却又绝对公平地给予，所以我无法去怪罪时间太少让我不能悟道三千，尽管我从未停止挥霍。六道禅言，本无一物，何处惹尘埃，可来到这世上的人都沾满尘埃，科技的浪潮席卷世上一切清静之地，人须跳入这大海茫茫才能到心中彼岸，可这样一来，大海成了烂泥，理想被深埋。安逸或是假象，行进必然不止，美好的生活应是真的，一路的颠簸也该是真的，但短暂的幸福应是疲惫生活里的一缕光，存在不会被遗忘，物质宇宙是一个锚点，美好永远是相对的，幸福或因个人的感性变得两样，所以残酷也是真的，倘若这世上有人生而知之，他会被社会的复杂压垮，全无坚定信念，会倾刻成为一生背负软弱之名的人。那么迷惘是人生的隐身衣，在生生不息的浪涛里，它让人不随波前进，留下审思自我的机会，当然，有人或时刻迷惘，对一切不安，也有人一生坚定，为一种理想矢志不渝。世界存在有真也有真假，毕竟真理门打开的或是虚假世界。所以幸福是人坚信存在的真理，它的尽头指向永恒的美好，那时会消灭客观的残酷，于是迷惘永恒不止，古人仰望星空，初生的灵智让他们想要挥拳那无垠...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/GHydxfn/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/GHydxfn/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">XX guo</div><div class="author-info-description">高质量'博客'分享'成长</div><div class="site-data"><a href="/GHydxfn/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/GHydxfn/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/GHydxfn/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ggg2761367"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/GHydxfn/2026/11/21/%E8%BF%91%E6%97%A5%E5%BF%83%E5%BE%97/" title="近日心得">近日心得</a><time datetime="2026-11-21T11:56:00.000Z" title="发表于 2026-11-21 11:56:00">2026-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/GHydxfn/2026/11/19/C%E8%AF%AD%E8%A8%80%E7%AC%AC%E4%B8%80%E5%A4%A9%E5%AD%A6%E4%B9%A0/" title="C语言第一天学习">C语言第一天学习</a><time datetime="2026-11-19T15:10:00.000Z" title="发表于 2026-11-19 15:10:00">2026-11-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/GHydxfn/2026/06/19/article/" title="手稿五篇">手稿五篇</a><time datetime="2026-06-19T11:49:54.000Z" title="发表于 2026-06-19 11:49:54">2026-06-19</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By XX guo</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/GHydxfn/js/utils.js?v=5.5.4"></script><script src="/GHydxfn/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
